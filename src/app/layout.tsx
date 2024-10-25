@@ -1,17 +1,7 @@
+import { ViewTransitions } from "next-view-transitions";
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import Navigation from "@/components/Navigation";
 import "./globals.css";
-
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,12 +14,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
+    <ViewTransitions>
+      <html lang="en">
+        <body className={`antialiased bg-white min-h-dvh grid`}>
+          <div className="bg-black text-white rounded-2xl relative m-0.5">
+            <Navigation />
+            <div style={{ viewTransitionName: "content" }}>{children}</div>
+          </div>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }

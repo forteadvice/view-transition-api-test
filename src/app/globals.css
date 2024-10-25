@@ -3,25 +3,82 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --content-out-anim: 0.2s content-out cubic-bezier(0.55, 0, 0.14, 1) both;
+  --content-in-anim: 0.4s 0.2s content-in cubic-bezier(0.55, 0, 0.14, 1) both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes content-in {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+@keyframes content-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-20px);
+    opacity: 0;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* Remove animations from root */
+/* This is to keep the bg and frame un-animatied  */
+::view-transition-image-pair(root) {
+  animation: none;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Content transitions */
+/* This will be the animations for all elms, unless a name is given to specific elms */
+::view-transition-old(content) {
+  animation: var(--content-out-anim);
+}
+::view-transition-new(content) {
+  animation: var(--content-in-anim);
+}
+
+/* Article Image */
+/* Handle aspect ratio resize - code from https://developer.chrome.com/docs/web-platform/view-transitions/same-document#handle_changes_in_aspect_ratio */
+::view-transition-old(.article-image),
+::view-transition-new(.article-image) {
+  animation: none;
+  mix-blend-mode: normal;
+  height: 100%;
+  overflow: clip;
+}
+::view-transition-old(.article-image) {
+  object-fit: contain;
+}
+::view-transition-new(.article-image) {
+  object-fit: cover;
+}
+/* Handle images when no old-new-match */
+::view-transition-old(.article-image):only-child {
+  animation: var(--content-out-anim);
+}
+::view-transition-new(.article-image):only-child {
+  animation: var(--content-in-anim);
+}
+
+/* Navigation underline */
+::view-transition-group(navigation-underline) {
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.59, 0.11, 0.4, 1.3);
+  height: 2px;
+  overflow: clip;
+}
+
+/* No animations on reduced-motion */
+@media (prefers-reduced-motion) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
