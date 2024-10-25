@@ -22,7 +22,7 @@ export default function ArticleCard({ id, title, image }: ArticleObject) {
         style={{
           //@ts-expect-error not supported yet
           viewTransitionClass: "article-image",
-          viewTransitionName: `article-image-${id}`,
+          viewTransitionName: clicked ? `article-image-${id}` : undefined,
         }}
       />
       <div className="my-2">
